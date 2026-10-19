@@ -1,0 +1,18 @@
+[project]
+name = "ddl-metadata-generator"
+version = "1.0.0"
+description = "Generate ingestion metadata (column, table, view) for every environment from one validated config."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+metagen = "metagen.__main__:main"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

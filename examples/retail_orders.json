@@ -1,0 +1,45 @@
+{
+  "ticket_id": "DATA-1042",
+  "environments": ["dev", "sit", "ppt", "prd"],
+  "location_template": "/data/{env}/consumption/{layer}/{folder}/{table}",
+  "folder": "retail_orders",
+  "tables": {
+    "orders_daily": {
+      "database": "retail_cnsm",
+      "layer": "analytics",
+      "format": "parquet",
+      "comment": "Orders, one row per order, refreshed daily",
+      "primary_key": "order_id",
+      "cdc_column": "updated_at",
+      "columns": [
+        {"name": "order_id", "type": "BigInt", "description": "Order identifier"},
+        {"name": "customer_id", "type": "BigInt", "description": "Customer identifier"},
+        {"name": "store_code", "type": "String", "length": 10, "description": "Store code"},
+        {"name": "order_total", "type": "Decimal", "length": 18, "description": "Order total incl. tax"},
+        {"name": "order_status", "type": "String", "length": 20, "description": "Order status code"},
+        {"name": "updated_at", "type": "Timestamp", "description": "Last change in the source system"},
+        {"name": "load_date", "type": "String", "length": 10, "partition": true, "description": "Load date partition (YYYY-MM-DD)"}
+      ]
+    },
+    "customers_daily": {
+      "database": "retail_cnsm",
+      "layer": "analytics",
+      "format": "parquet",
+      "comment": "Customer master, one row per customer",
+      "primary_key": "customer_id",
+      "cdc_column": "updated_at",
+      "columns": [
+        {"name": "customer_id", "type": "BigInt", "description": "Customer identifier"},
+        {"name": "email", "type": "String", "length": 255, "description": "Email address", "pii": true},
+        {"name": "mobile_no", "type": "String", "length": 20, "description": "Mobile number", "pii": true},
+        {"name": "loyalty_tier", "type": "String", "length": 20, "description": "Loyalty programme tier"},
+        {"name": "updated_at", "type": "Timestamp", "description": "Last change in the source system"},
+        {"name": "load_date", "type": "String", "length": 10, "partition": true, "description": "Load date partition (YYYY-MM-DD)"}
+      ]
+    }
+  },
+  "views": {
+    "v_orders_daily": {"table": "orders_daily", "target_database": "retail_view"},
+    "v_customers_daily": {"table": "customers_daily", "target_database": "retail_view"}
+  }
+}
